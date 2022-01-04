@@ -5,7 +5,7 @@ setup(
     description="Parse MiCADO ADTs for the MiCADO Submitter",
     version="0.8.0",
     author="Jay DesLauriers",
-    packages=find_packages(exclude=['tests']),
+    packages=["micadoparser"],
     install_requires=["ruamel.yaml", "tosca-parser"],
 
     python_requires=">=3.8",
