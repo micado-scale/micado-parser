@@ -1,0 +1,2 @@
+ruamel.yaml==0.17.20
+tosca-parser==2.5.0
