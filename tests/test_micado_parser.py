@@ -5,12 +5,14 @@ from micadoparser.parser import set_template
 
 
 class TestMicadoParser(unittest.TestCase):
-    """ UnitTests for micado_parser """
+    """UnitTests for micado_parser"""
 
     def test_parse_adt_from_url(self):
-        tpl = set_template("https://raw.githubusercontent.com/micado-scale/ansible-micado/develop/demos/wordpress/wordpress_ec2.yaml")
+        tpl = set_template(
+            "https://raw.githubusercontent.com/micado-scale/ansible-micado/develop/demos/wordpress/wordpress_ec2.yaml"
+        )
         self.assertIn("wordpress", [x.name for x in tpl.nodetemplates])
-        
+
     def test_parse_adt_from_file(self):
         tpl = set_template("tests/templates/good_tosca.yaml")
         self.assertIn("stressynet", [x.name for x in tpl.nodetemplates])
