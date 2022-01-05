@@ -61,6 +61,12 @@ def set_template(path, parsed_params=None):
     | parsed_params: dictionary containing the input to change
     | path: local or remote path to the file to parse
     """
+    if path.endswith(".csar"):
+        template = get_template(path, parsed_params)
+        validator.validation(template)
+        _find_other_inputs(template)
+        return template
+
     tpl = TemplateLoader(path)
     if is_tosca_v_1_3(tpl.dict):
         fix_tosca_version(tpl.dict)
