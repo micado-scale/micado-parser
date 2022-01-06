@@ -11,6 +11,8 @@ repositories and the requirements and relationships of custom defined types.
 """
 from toscaparser.tosca_template import ToscaTemplate
 
+from micadoparser import utils
+
 
 def validate_toscatemplate(tpl):
     """Validate TOSCA Template
@@ -35,7 +37,7 @@ def validate_repositories(node, tpl):
     if not repository_names:
         return {"[*TPL] No repositories found!"}
 
-    repositories = _key_search("repository", node.entity_tpl)
+    repositories = utils.key_search("repository", node.entity_tpl)
     return {
         "[NODE: {}] Repository <{}> not defined!".format(node.name, repo)
         for repo in repositories
@@ -51,13 +53,13 @@ def validate_requirements(node, tpl):
     reference requirements defined in custom_types. Returns errors if not.
 
     """
-    if not _is_custom(node, tpl):
+    if not utils.is_custom(node, tpl):
         return {}
     type_reqs = node.type_definition.requirements
     node_reqs = node.requirements
 
-    type_req_names = _get_requirement_names(type_reqs)
-    node_req_names = _get_requirement_names(node_reqs)
+    type_req_names = utils.get_requirement_names(type_reqs)
+    node_req_names = utils.get_requirement_names(node_reqs)
 
     msg = "Too many requirements per list item!"
 
@@ -82,7 +84,7 @@ def validate_relationships(node, tpl):
     if not.
 
     """
-    if not _is_custom(node, tpl):
+    if not utils.is_custom(node, tpl):
         return {}
 
     type_reqs = node.type_definition.requirements
@@ -90,9 +92,10 @@ def validate_relationships(node, tpl):
     errors = set()
 
     for node_req in node_reqs:
-        relationships = _key_search(["relationship", "type"], node_req)
+        relationships = utils.key_search(["relationship", "type"], node_req)
         supported_relationships = [
-            _key_search(["relationship", "type"], type_req) for type_req in type_reqs
+            utils.key_search(["relationship", "type"], type_req)
+            for type_req in type_reqs
         ]
 
         errors.update(
@@ -114,12 +117,12 @@ def validate_relationship_properties(node, tpl):
     in TOSCA normative or custom types. Returns errors if not.
 
     """
-    if not _is_custom(node, tpl):
+    if not utils.is_custom(node, tpl):
         return {}
 
     errors = set()
-    for req, prop, relation in _get_required_properties(node):
-        if not _has_property(req, prop, relation):
+    for req, prop, relation in utils.get_required_properties(node):
+        if not utils.has_property(req, prop, relation):
             errors.update(
                 {
                     "[NODE: {}] Relationship <{}> "
@@ -127,57 +130,3 @@ def validate_relationship_properties(node, tpl):
                 }
             )
     return errors
-
-
-def _is_custom(node, tpl):
-    """Determine if node is of a custom type"""
-    custom_types = tuple(tpl.topology_template.custom_defs.keys())
-    return True if node.type in custom_types else False
-
-
-def _has_property(requirements, prop, rel_type):
-    """Check if a requirement has the correct properties and type"""
-    for requirement_dict in requirements:
-        for requirement in requirement_dict.values():
-            if isinstance(requirement, str):
-                return True
-            relation = requirement.get("relationship")
-            if isinstance(relation, dict) and rel_type in relation.get("type"):
-                if prop in str(requirement_dict):
-                    return True
-    return False
-
-
-def _get_requirement_names(req_dict):
-    """Get requirement names"""
-    return [
-        requirement
-        for requirements in [list(req.keys()) for req in req_dict]
-        for requirement in requirements
-    ]
-
-
-def _get_required_properties(node):
-    """Generate required properties"""
-    for relation in node.related.values():
-        for prop, prop_obj in relation.get_properties_def().items():
-            if prop_obj.required:
-                yield (node.requirements, prop, relation.type)
-
-
-def _key_search(query, node):
-    """Search through the raw data of a node for a value given a key"""
-
-    def flatten_pairs(nest):
-        """Recursively crawl through a nested dictionary"""
-        for key, val in nest.items():
-            if isinstance(val, dict):
-                yield from flatten_pairs(val)
-            elif isinstance(val, list):
-                for listitem in val:
-                    if isinstance(listitem, dict):
-                        yield from flatten_pairs(listitem)
-            else:
-                yield key, val
-
-    return [val for key, val in flatten_pairs(node) if key in query]

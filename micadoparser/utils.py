@@ -68,3 +68,57 @@ def resolve_get_functions(
                 )
                 if test_result_fn(result):
                     dict_to_search[key][index] = resolve_result_fn(result, *args)
+
+
+def is_custom(node, tpl):
+    """Determine if node is of a custom type"""
+    custom_types = tuple(tpl.topology_template.custom_defs.keys())
+    return True if node.type in custom_types else False
+
+
+def has_property(requirements, prop, rel_type):
+    """Check if a requirement has the correct properties and type"""
+    for requirement_dict in requirements:
+        for requirement in requirement_dict.values():
+            if isinstance(requirement, str):
+                return True
+            relation = requirement.get("relationship")
+            if isinstance(relation, dict) and rel_type in relation.get("type"):
+                if prop in str(requirement_dict):
+                    return True
+    return False
+
+
+def get_requirement_names(req_dict):
+    """Get requirement names"""
+    return [
+        requirement
+        for requirements in [list(req.keys()) for req in req_dict]
+        for requirement in requirements
+    ]
+
+
+def get_required_properties(node):
+    """Generate required properties"""
+    for relation in node.related.values():
+        for prop, prop_obj in relation.get_properties_def().items():
+            if prop_obj.required:
+                yield (node.requirements, prop, relation.type)
+
+
+def key_search(query, node):
+    """Search through the raw data of a node for a value given a key"""
+
+    def flatten_pairs(nest):
+        """Recursively crawl through a nested dictionary"""
+        for key, val in nest.items():
+            if isinstance(val, dict):
+                yield from flatten_pairs(val)
+            elif isinstance(val, list):
+                for listitem in val:
+                    if isinstance(listitem, dict):
+                        yield from flatten_pairs(listitem)
+            else:
+                yield key, val
+
+    return [val for key, val in flatten_pairs(node) if key in query]
