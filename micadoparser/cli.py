@@ -14,7 +14,7 @@ logger = logging.getLogger("tosca.model")
 logger.setLevel(logging.ERROR)
 
 
-@click.command()
+@click.command(no_args_is_help=True)
 @click.argument("files", nargs=-1, type=click.Path(exists=True, dir_okay=False))
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 def main(files, verbose):
