@@ -1,6 +1,6 @@
 import copy
 
-from micadoparser.utils import resolve_get_functions
+from micadoparser.utils.utils import resolve_get_functions
 
 
 def is_tosca_v_1_3(tpl):

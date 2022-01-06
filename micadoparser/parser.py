@@ -1,58 +1,19 @@
 import logging
-import urllib
-from tempfile import NamedTemporaryFile
-from pathlib import Path
 
 from toscaparser.tosca_template import ToscaTemplate
-from toscaparser.common.exception import ValidationError
+from toscaparser.common.exception import ValidationError as TOSCAParserError
+from yaml.error import YAMLError
 
 from micadoparser import validator
-from micadoparser.utils import (
-    dump_order_yaml, 
-    resolve_get_functions, 
-    get_yaml_data,
-)
-from micadoparser.handle_extra_tosca import (
-    resolve_occurrences,
-    is_tosca_v_1_3,
-    fix_tosca_version,
-)
+from micadoparser.exceptions import ValidationError
+from micadoparser.utils.yaml import handle_yaml
+from micadoparser.utils.utils import resolve_get_functions
 
 logger = logging.getLogger("micadoparser." + __name__)
 
 
-class TemplateLoader:
-    """ Load a template from file or URL
-
-    Provides attributes for the YAML dict object and
-    if a file path, the parent directory of the file
-    """
-    def __init__(self, path):
-        self.parent_dir = None
-        self.dict = self._get_tpl(path)
-
-    def _get_tpl(self, path):
-        """ Return the template dictionary """
-        file_path = Path(path)
-        if file_path.is_file():
-            self.parent_dir = file_path.parent
-            return get_yaml_data(file_path)
-
-        # Otherwise try as a URL
-        try:
-            f = urllib.request.urlopen(path)
-            return get_yaml_data(f, stream=True)
-        except ValueError:
-            logger.error(f"Could not find the ADT at {path}")
-            raise FileNotFoundError(f"Could not find the ADT at {path}")
-        except urllib.error.URLError as e:
-            logger.error(f"Could not reach URL {e}")
-            raise FileNotFoundError(f"Could not reach URL {e}")
-
-
 def set_template(path, parsed_params=None):
-    """the method that will parse the YAML and return ToscaTemplate
-    object topology object.
+    """Parses any ADT and returns a ToscaTemplate
 
     :params: path, parsed_params
     :type: string, dictionary
@@ -62,22 +23,14 @@ def set_template(path, parsed_params=None):
     | path: local or remote path to the file to parse
     """
     if path.endswith(".csar"):
-        template = get_template(path, parsed_params)
+        #TODO: Implement this
+        pass
+    else:
+        template = handle_yaml(path, parsed_params)
+
         validator.validation(template)
         _find_other_inputs(template)
-        return template
 
-    tpl = TemplateLoader(path)
-    if is_tosca_v_1_3(tpl.dict):
-        fix_tosca_version(tpl.dict)
-        resolve_occurrences(tpl.dict, parsed_params)
-
-    with NamedTemporaryFile(dir=tpl.parent_dir, suffix=".yaml") as temp_tpl:
-        dump_order_yaml(tpl.dict, temp_tpl.name)
-        template = get_template(temp_tpl.name, parsed_params)
-
-    validator.validation(template)
-    _find_other_inputs(template)
     return template
 
 

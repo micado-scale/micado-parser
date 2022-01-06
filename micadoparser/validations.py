@@ -11,7 +11,7 @@ repositories and the requirements and relationships of custom defined types.
 """
 from toscaparser.tosca_template import ToscaTemplate
 
-from micadoparser import utils
+from micadoparser.utils import utils
 from micadoparser.exceptions import ValidationError
 
 
@@ -38,8 +38,10 @@ def validate_topologytemplate(tpl):
         raise ValidationError("[TPL] Missing node_templates")
     return {}
 
+
 def validate_csar(tpl):
     """"""
+
 
 def validate_repositories(node, tpl):
     """Validate repository names

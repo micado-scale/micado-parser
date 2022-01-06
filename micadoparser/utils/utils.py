@@ -1,36 +1,8 @@
-from ruamel.yaml import YAML, representer
-
-
-class NonAliasingRTRepresenter(representer.RoundTripRepresenter):
-    """Turn off auto-aliases in ruamel.yaml"""
-
-    def ignore_aliases(self, _):
-        return True
-
-
-yaml = YAML()
-yaml.default_flow_style = False
-yaml.preserve_quotes = True
-yaml.Representer = NonAliasingRTRepresenter
-
-
-def dump_order_yaml(data, path):
-    """Dump the dictionary to a yaml file"""
-
-    with open(path, "w") as file:
-        yaml.dump(data, file)
-
-
-def get_yaml_data(path, stream=False):
-    """Retrieve the yaml dictionary form a yaml file and return it"""
-
-    if stream:
-        return yaml.load(path)
-
-    with open(path, "r") as file:
-        data = yaml.load(file)
-
-    return data
+"""
+MiCADO Submission Engine Utilities
+---------------------------------------
+Various utilities for the MiCADO Parser which did not fit elsewhere
+"""
 
 
 def resolve_get_functions(
@@ -122,3 +94,8 @@ def key_search(query, node):
                 yield key, val
 
     return [val for key, val in flatten_pairs(node) if key in query]
+
+
+def is_csar(file):
+    """Check if file is a CSAR multi-file ADT"""
+    return file.casefold().endswith("csar".casefold())
