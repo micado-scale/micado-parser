@@ -6,6 +6,7 @@ from yaml.error import YAMLError
 
 from micadoparser import validator
 from micadoparser.exceptions import ValidationError
+from micadoparser.utils.csar import handle_csar
 from micadoparser.utils.yaml import handle_yaml
 from micadoparser.utils.utils import resolve_get_functions
 
@@ -22,9 +23,9 @@ def set_template(path, parsed_params=None):
     | parsed_params: dictionary containing the input to change
     | path: local or remote path to the file to parse
     """
+    errors = None
     if path.endswith(".csar"):
-        #TODO: Implement this
-        pass
+        template = handle_csar(path, parsed_params)
     else:
         template = handle_yaml(path, parsed_params)
 
