@@ -29,8 +29,8 @@ def set_template(path, parsed_params=None):
     else:
         template = handle_yaml(path, parsed_params)
 
-        validator.validation(template)
-        _find_other_inputs(template)
+    validator.validation(template)
+    _find_other_inputs(template)
 
     return template
 
@@ -49,29 +49,25 @@ def get_template(path, parsed_params):
         ToscaTemplate: Parsed template object
     """
 
+    error = ""
     try:
-        template = ToscaTemplate(
-            path=path, parsed_params=parsed_params, a_file=True
-        )
-    except ValidationError as e:
-        message = [
-            line
-            for line in e.message.splitlines()
-            if not line.startswith("\t\t")
+        template = ToscaTemplate(path=path, parsed_params=parsed_params, a_file=True)
+    except TOSCAParserError as e:
+        error = [
+            line for line in e.message.splitlines() if not line.startswith("\t\t")
         ]
-        message = "\n".join(message)
-        raise ValueError(message) from None
+        error = "\n".join(error)
     except AttributeError as e:
-        logger.error(
-            f"error happened: {e}, This might be due to the wrong type in "
-            "the TOSCA template, check if all the type exist or that the "
-            "import section is correct."
-        )
-        raise ValueError(
-            "An error occured while parsing, This might be due to the a "
-            "wrong type in the TOSCA template, check if all the types "
-            "exist, or that the import section is correct."
-        ) from None
+        error = f"{e}\n HINT: This might be due to a wrong type - check your imports."  
+    except YAMLError as e:
+        error = f"YAML Error\n  {e}"      
+    except Exception as e:
+        error = (f"Unknown Error:\n {e}\n\n"
+                "Please raise a ticket at https://github.com/micado-scale/ansible-micado/issues.")
+
+    if error:
+        raise ValidationError(error)
+
     return template
 
 
@@ -90,15 +86,13 @@ def _find_other_inputs(template):
 
 
 def _get_input_value(key, template):
-    """ Custom get_input resolution using parsed_params """
+    """Custom get_input resolution using parsed_params"""
     try:
         return template.parsed_params[key]
     except (KeyError, TypeError):
         logger.debug(f"Input '{key}' not given, using default")
 
     try:
-        return [
-            param.default for param in template.inputs if param.name == key
-        ][0]
+        return [param.default for param in template.inputs if param.name == key][0]
     except IndexError:
         logger.error(f"Input '{key}' has no default")
