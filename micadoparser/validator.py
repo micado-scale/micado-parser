@@ -29,7 +29,7 @@ NODE_VALIDATIONS = [
 ]
 
 
-def validation(tpl):
+def validation(tpl, errors=None):
     """The validation process
 
     Runs validation steps on the given TOSCA Template, and builds an error
@@ -55,7 +55,8 @@ def validation(tpl):
         (...list of errors...)
 
     """
-    errors = set()
+    if not errors:
+        errors = set()
 
     # TPL VALIDATIONS
     for validator in TPL_VALIDATIONS:
@@ -67,8 +68,8 @@ def validation(tpl):
             errors.update(validator(node, tpl))
 
     if errors:
-        logger.error("Incompatible ToscaTemplate!")
-        raise MultiError(sorted(errors))  # , "Validation Errors!")
+        logger.info("Incompatible ToscaTemplate!")
+        raise MultiError(sorted(errors))
     else:
         logger.info("ToscaTemplate object passed compatibility validation.")
         return "ToscaTemplate passed compatibility validation"
