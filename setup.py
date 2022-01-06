@@ -9,7 +9,7 @@ setup(
     install_requires=["ruamel.yaml", "tosca-parser"],
 
     python_requires=">=3.8",
-    # entry_points={
-    #     "console_scripts": ["micadoparser=micadoparser.cli:main"],
-    # },
+    entry_points={
+        "console_scripts": ["micadoparser=micadoparser.cli:main"],
+    },
 )
