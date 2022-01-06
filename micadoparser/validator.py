@@ -16,7 +16,10 @@ from micadoparser.exceptions import MultiError
 
 logger = logging.getLogger("micadoparser." + __name__)
 
-TPL_VALIDATIONS = [validations.validate_toscatemplate]
+TPL_VALIDATIONS = [
+    validations.validate_toscatemplate,
+    validations.validate_topologytemplate,
+]
 
 NODE_VALIDATIONS = [
     validations.validate_repositories,
