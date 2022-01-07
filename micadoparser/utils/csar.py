@@ -28,8 +28,8 @@ def handle_csar(path, parsed_params):
     """
     errors = csar_validation(path, parsed_params)
     if errors:
-        raise MultiError(errors)
-    
+        raise MultiError(errors, "Cannot parse CSAR, issues in templates...")
+
     template = parser.get_template(path, parsed_params)
 
     return template
@@ -46,13 +46,13 @@ def csar_validation(file, parsed_params):
     except Exception as e:
         raise ValidationError("[CSAR] Could not extract CSARchive")
 
-    for file in os.listdir(temp_dir):       
-        
+    for file in os.listdir(temp_dir):
+
         path = os.path.join(temp_dir, file)
         try:
             if not os.path.isfile(path):
                 continue
-                    
+
             # There is an opportunity here to create a new
             # CSAR from "fixed" single YAML files (eg. TOSCA v1.3)
             handle_yaml(path, parsed_params)

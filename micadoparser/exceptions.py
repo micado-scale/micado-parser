@@ -4,8 +4,8 @@
 class ValidationError(Exception):
     """Base error for validation"""
 
-    def __init__(self, error):
-        self.msg = "Error while parsing..."
+    def __init__(self, error, header="Error while parsing..."):
+        self.msg = header
         self.msg += f"\n  {error}"
 
     def __str__(self):
@@ -16,7 +16,7 @@ class ValidationError(Exception):
 class MultiError(ValidationError):
     """Errors occured during validation..."""
 
-    def __init__(self, error_set):
-        self.msg = "Multiple validation issues in ADT..."
+    def __init__(self, error_set, header="Multiple issues in parsed ADT..."):
+        self.msg = header
         for error in error_set:
             self.msg += "\n  {}".format(error)

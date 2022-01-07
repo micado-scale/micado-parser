@@ -66,7 +66,7 @@ def get_template(path, parsed_params):
                 "Please raise a ticket at https://github.com/micado-scale/ansible-micado/issues.")
 
     if error:
-        raise ValidationError(error)
+        raise ValidationError(error, "TOSCA Parser could not parse the ADT...")
 
     return template
 

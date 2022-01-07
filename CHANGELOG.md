@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog
 - A readme
 - Packaged on PyPI
+- Support/add custom exception message headers
 
 ### Changed
 - More details in setup.py
