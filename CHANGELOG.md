@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - More details in setup.py
 
+### Fixed
+- Properly silence logging in CLI
+
 ## [0.10.2] - 2022-01-06
 ### Added
 - Command-line interface for standalone parsing

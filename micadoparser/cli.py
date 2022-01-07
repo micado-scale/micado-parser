@@ -9,9 +9,8 @@ from ruamel.yaml.error import YAMLError
 from micadoparser.parser import set_template
 from micadoparser.exceptions import ValidationError
 
-
-logger = logging.getLogger("tosca.model")
-logger.setLevel(logging.ERROR)
+# Turn off logging
+logging.basicConfig(level=100)
 
 
 @click.command(no_args_is_help=True)
