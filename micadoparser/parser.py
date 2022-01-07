@@ -54,16 +54,20 @@ def get_template(path, parsed_params):
         template = ToscaTemplate(path=path, parsed_params=parsed_params, a_file=True)
     except TOSCAParserError as e:
         error = [
-            line for line in e.message.splitlines() if not line.startswith("\t\t")
+            line
+            for line in e.message.splitlines()
+            if all([line, not line.startswith("\t\t")])
         ]
         error = "\n".join(error)
     except AttributeError as e:
-        error = f"{e}\n HINT: This might be due to a wrong type - check your imports."  
+        error = f"{e}\n HINT: This might be due to a wrong type - check your imports."
     except YAMLError as e:
-        error = f"YAML Error\n  {e}"      
+        error = f"YAML Error\n  {e}"
     except Exception as e:
-        error = (f"Unknown Error:\n {e}\n\n"
-                "Please raise a ticket at https://github.com/micado-scale/ansible-micado/issues.")
+        error = (
+            f"Unknown Error:\n {e}\n\n"
+            "Please raise a ticket at https://github.com/micado-scale/ansible-micado/issues."
+        )
 
     if error:
         raise ValidationError(error, "TOSCA Parser could not parse the ADT...")
