@@ -20,7 +20,7 @@ or from GitHub.
 
 ```bash
 git clone https://github.com/micado-scale/micado-parser
-pip install micado-parser
+pip install micado-parser/.
 ```
 
 ## Usage
@@ -72,7 +72,7 @@ from micadoparser.parser import set_template
 tpl = set_template("/home/ubuntu/adts/nginx.yaml")
 
 tpl_with_params = set_template(
-    "home/ubuntu/adts/wordpress.csar,
+    "home/ubuntu/adts/wordpress.csar",
     {"username": "jay", "token": "ABD992LOKAL"}
 )
 ```

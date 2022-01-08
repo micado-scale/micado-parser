@@ -29,7 +29,7 @@ def handle_csar(path, parsed_params):
     errors = csar_validation(path, parsed_params)
     if errors:
         raise MultiError(errors, "Cannot parse CSAR, issues in templates...")
-
+        
     template = parser.get_template(path, parsed_params)
 
     return template

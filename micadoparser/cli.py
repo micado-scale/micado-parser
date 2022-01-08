@@ -14,7 +14,9 @@ logging.basicConfig(level=100)
 
 
 @click.command(no_args_is_help=True)
-@click.argument("files", nargs=-1, type=click.Path(exists=True, dir_okay=False))
+@click.argument(
+    "files", nargs=-1, type=click.Path(exists=True, dir_okay=False)
+)
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 def main(files, verbose):
     """Attempts to parse a MiCADO ADT
@@ -39,7 +41,9 @@ def main(files, verbose):
             click.secho("Invalid ADT", fg="red", bold=True)
             click.echo(e)
         except Exception as e:
-            click.secho(f"\nUnhandled Exception:\n {type(e)}\n  {e}", fg="bright_red")
+            click.secho(
+                f"\nUnhandled Exception:\n {type(e)}\n  {e}", fg="bright_red"
+            )
     if error:
         sys.exit(1)
 

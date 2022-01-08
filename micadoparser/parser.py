@@ -51,7 +51,9 @@ def get_template(path, parsed_params):
 
     error = ""
     try:
-        template = ToscaTemplate(path=path, parsed_params=parsed_params, a_file=True)
+        template = ToscaTemplate(
+            path=path, parsed_params=parsed_params, a_file=True
+        )
     except TOSCAParserError as e:
         error = [
             line
@@ -97,6 +99,8 @@ def _get_input_value(key, template):
         logger.debug(f"Input '{key}' not given, using default")
 
     try:
-        return [param.default for param in template.inputs if param.name == key][0]
+        return [
+            param.default for param in template.inputs if param.name == key
+        ][0]
     except IndexError:
         logger.error(f"Input '{key}' has no default")
