@@ -12,11 +12,7 @@ from pathlib import Path
 from ruamel.yaml import YAML, representer
 
 from micadoparser import parser
-from micadoparser.handle_extra_tosca import (
-    resolve_occurrences,
-    is_tosca_v_1_3,
-    fix_tosca_version,
-)
+from micadoparser.utils import tosca
 
 logger = logging.getLogger("micadoparser." + __name__)
 
@@ -97,10 +93,10 @@ def handle_yaml(path, parsed_params):
     """
 
     tpl = YAMLLoader(path)
-    
-    if is_tosca_v_1_3(tpl.dict):
-        fix_tosca_version(tpl.dict)
-        resolve_occurrences(tpl.dict, parsed_params)
+
+    if tosca.is_v1_3(tpl.dict):
+        tosca.fix_version(tpl.dict)
+        tosca.resolve_occurrences(tpl.dict, parsed_params)
 
     with NamedTemporaryFile(dir=tpl.parent_dir, suffix=".yaml") as temp_tpl:
         dump_order_yaml(tpl.dict, temp_tpl.name)
