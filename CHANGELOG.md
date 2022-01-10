@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A readme
 - Packaged on PyPI
 - Support/add custom exception message headers
+- set_template and MultiError can be imported from top-level pkg
 
 ### Changed
 - More details in setup.py

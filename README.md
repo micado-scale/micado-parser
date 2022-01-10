@@ -67,7 +67,7 @@ The primary function of the MiCADO Parser is to return a validated [ToscaTemplat
 To use it in your own project, simply import the `set_template` function and pass it the path to your ADT. You can optionally pass a dictionary of TOSCA inputs, if inputs are defined in your ADT.
 
 ```python
-from micadoparser.parser import set_template
+from micadoparser import set_template
 
 tpl = set_template("/home/ubuntu/adts/nginx.yaml")
 
@@ -75,6 +75,17 @@ tpl_with_params = set_template(
     "home/ubuntu/adts/wordpress.csar",
     {"username": "jay", "token": "ABD992LOKAL"}
 )
+```
+
+To use the package for validation only, use the `set_template` function and catch the `MultiError` exception.
+
+```python
+from micadoparser import set_template, MultiError
+
+try:
+    set_template("/home/ubuntu/adts/nginx.yaml")
+except MultiError as e:
+    print(e)
 ```
 
 ## Comparison with the OpenStack TOSCA Parser
