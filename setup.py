@@ -21,7 +21,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     packages=["micadoparser", "micadoparser.utils"],
-    install_requires=["ruamel.yaml", "tosca-parser"],
+    install_requires=["ruamel.yaml", "tosca-parser", "click"],
 
     python_requires=">=3.8",
     entry_points={

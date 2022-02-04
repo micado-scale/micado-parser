@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Stop validating top level repositories key if no repo is referenced in ADT
 
+### Fixed
+- `click` package was missing from package requirements
+
 ## [0.10.3] - 2022-01-10
 ### Added
 - This changelog
