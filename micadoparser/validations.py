@@ -51,8 +51,6 @@ def validate_repositories(node, tpl):
 
     """
     repository_names = [repository.name for repository in tpl.repositories]
-    if not repository_names:
-        return {"[*TPL] No repositories found!"}
 
     repositories = utils.key_search("repository", node.entity_tpl)
     return {
