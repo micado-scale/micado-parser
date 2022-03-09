@@ -32,6 +32,8 @@ def handle_csar(path, parsed_params):
         
     template = parser.get_template(path, parsed_params)
 
+    template.nodetemplates = get_concrete_nodes(template)
+
     return template
 
 
@@ -63,3 +65,40 @@ def csar_validation(file, parsed_params):
         shutil.rmtree(temp_dir)
 
     return errors
+
+
+def get_concrete_nodes(tpl):
+    """Pulls CSAR sub nodes up to top level"""
+    concrete_nodes = []
+    abstract_nodes = []
+    for node in tpl.nodetemplates:
+        if not node.sub_mapping_tosca_template.nodetemplates:
+            concrete_nodes.append(node)
+            continue
+
+        abstract_nodes.append(node)
+        for subnode in node.sub_mapping_tosca_template.nodetemplates:
+            concrete_nodes.append(subnode)
+
+    for node in abstract_nodes:
+        if not node.related:
+            continue
+
+        concrete_related = {}
+
+        # iterate over other abstract nodes under requirements
+        for abst_node, conc_rel in node.related.items():
+
+            # iterate over concrete nodes of the abstract node
+            for conc_node in abst_node.sub_mapping_tosca_template.nodetemplates:
+
+                # build the related map using concrete nodes and relationships
+                concrete_related.update({conc_node: conc_rel})
+
+        for subnode in node.sub_mapping_tosca_template.nodetemplates:
+
+            subnode.related.update(concrete_related)
+            # TODO: can we implement something like this?
+            # subnode._requirements += node.requirements
+
+    return concrete_nodes
