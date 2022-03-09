@@ -9,7 +9,7 @@ class TestMicadoParser(unittest.TestCase):
 
     def test_parse_adt_from_url(self):
         tpl = set_template(
-            "https://raw.githubusercontent.com/micado-scale/ansible-micado/develop/demos/wordpress/wordpress_ec2.yaml"
+            "https://raw.githubusercontent.com/micado-scale/ansible-micado/main/demos/wordpress/wordpress_ec2.yaml"
         )
         self.assertIn("wordpress", [x.name for x in tpl.nodetemplates])
 
