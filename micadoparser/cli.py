@@ -65,6 +65,14 @@ def _generate_detail(tpl: ToscaTemplate, verbose: int):
     for node in tpl.nodetemplates:
         click.echo(f"    {node.name}: ", nl=False)
         click.secho(node.type, italic=True)
+        if verbose < 3:
+            continue
+        related = [k.name for k in node.related]
+        if related:
+            related = ", ".join(related)
+            click.secho("      required: ", bold=True, nl=False)
+            click.secho(related, underline=True)
+        click.secho()
 
 
 if __name__ == "__main__":
