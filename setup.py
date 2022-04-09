@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="micado-parser",
-    version="0.10.4",
+    version="0.10.5",
     author="Jay DesLauriers",
     author_email="j.deslauriers@westminster.ac.uk",
     description="Parse MiCADO ADTs for the MiCADO Submitter",
@@ -22,7 +22,6 @@ setup(
     ],
     packages=["micadoparser", "micadoparser.utils"],
     install_requires=["ruamel.yaml", "tosca-parser", "click"],
-
     python_requires=">=3.8",
     entry_points={
         "console_scripts": ["micadoparser=micadoparser.cli:main"],

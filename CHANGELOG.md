@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.5] - 2022-04-09
+### Added
+- CLI now displays related nodes with -vvv option
+- Abstract nodes are resolved to concrete substituted nodes (CSAR support)
+- Underscores and full-stops in node names auto replaced with dashes
+
+### Changed
+- Bump package versions
+  
+### Fixed
+- Bad URL in failing tests
 
 ## [0.10.4] - 2022-02-04
 ### Changed
@@ -100,7 +111,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Included as a module in the MiCADO TOSCASubmitter package
 - Light wrapper around the OpenStack TOSCAParser
 
-[Unreleased]: https://github.com/micado-scale/micado-parser/compare/v0.10.4...HEAD
+[Unreleased]: https://github.com/micado-scale/micado-parser/compare/v0.10.5...HEAD
+[0.10.5]: https://github.com/micado-scale/micado-parser/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/micado-scale/micado-parser/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/micado-scale/micado-parser/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/micado-scale/micado-parser/compare/v0.10.1...v0.10.2
