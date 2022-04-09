@@ -31,6 +31,7 @@ def set_template(path, parsed_params=None):
 
     validator.validation(template)
     _find_other_inputs(template)
+    _normalise_node_names(template)
 
     return template
 
@@ -104,3 +105,38 @@ def _get_input_value(key, template):
         ][0]
     except IndexError:
         logger.error(f"Input '{key}' has no default")
+
+
+def _normalise_node_names(template):
+    """Remove underscores and periods from node names and refs"""
+
+    # tpl and entity_tpl are not ever (I think) used to pull node names
+    # so update the name property of the nodetemplate object
+    for node in template.nodetemplates:
+        node.name = node.name.replace("_", "-").replace(".", "-")
+        _normalise_requirement_node_refs(node._requirements)
+
+    # the targets property just looks at entity_tpl, so update that
+    # references to renamed nodes exist in targets_list, so use that
+    for policy in template.policies:
+        policy.entity_tpl["targets"] = [
+            node.name for node in policy.targets_list
+        ]
+
+
+def _normalise_requirement_node_refs(requirements):
+    """Remove underscores and periods from node references"""
+    for requirement in requirements:
+
+        key = list(requirement)[0]
+        # for shorthand requirement notation, just replace the string
+        try:
+            requirement[key] = (
+                requirement[key].replace("_", "-").replace(".", "-")
+            )
+
+        # otherwise get the key and update 'node' in the inner dictionary
+        except AttributeError:
+            requirement[key]["node"] = (
+                requirement[key]["node"].replace("_", "-").replace(".", "-")
+            )
