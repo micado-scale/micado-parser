@@ -7,6 +7,9 @@ from micadoparser.parser import set_template
 class TestMicadoParser(unittest.TestCase):
     """UnitTests for micado_parser"""
 
+    def test_parse_csar(self):
+        set_template("tests/templates/thing-ce.csar")
+
     def test_parse_adt_from_url(self):
         tpl = set_template(
             "https://raw.githubusercontent.com/micado-scale/ansible-micado/main/demos/wordpress/wordpress_ec2.yaml"
