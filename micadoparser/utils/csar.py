@@ -72,7 +72,7 @@ def get_concrete_nodes(tpl):
     concrete_nodes = []
     abstract_nodes = []
     for node in tpl.nodetemplates:
-        if not node.sub_mapping_tosca_template.nodetemplates:
+        if not hasattr(node.sub_mapping_tosca_template, "nodetemplates"):
             concrete_nodes.append(node)
             continue
 
