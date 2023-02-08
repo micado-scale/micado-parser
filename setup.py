@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="micado-parser",
-    version="0.10.5",
+    version="0.10.6",
     author="Jay DesLauriers",
     author_email="j.deslauriers@westminster.ac.uk",
     description="Parse MiCADO ADTs for the MiCADO Submitter",
