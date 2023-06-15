@@ -80,15 +80,15 @@ def get_template(path, parsed_params):
 
 def _find_other_inputs(template):
     """Find `get_input` tags in the template, then resolve and update"""
-    resolve_get_functions(
-        template.tpl,
-        "get_input",
-        lambda x: x is not None,
-        _get_input_value,
-        template,
-    )
-    # Update nodetemplate properties
     for node in template.nodetemplates:
+        resolve_get_functions(
+            node.entity_tpl,
+            "get_input",
+            lambda x: x is not None,
+            _get_input_value,
+            template,
+        )
+        # Update nodetemplate properties
         node._properties = node._create_properties()
 
 
