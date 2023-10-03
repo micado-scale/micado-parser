@@ -1,3 +1,3 @@
 ruamel.yaml==0.17.21
-tosca-parser==2.5.1
+tosca-parser==2.9.1
 click==8.1.2
