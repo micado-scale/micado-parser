@@ -1,0 +1,27 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - custom_types.yaml
+
+repositories:
+  docker_hub: https://hub.docker.com/
+
+
+
+topology_template:
+  inputs:
+    echo_msg:
+      type: string
+      description: Message to echo   
+    sensitive_data:
+      type: secret
+      description: Some credential
+      default: pass123
+  node_templates:
+    inputtest:
+      type: tosca.nodes.MiCADO.Container.Application.Docker.Deployment
+      properties:
+        env:
+        - name: VAR1
+          value: { get_input: echo_msg }
+        command: ["/bin/sh", "-c", "echo $VAR1"]

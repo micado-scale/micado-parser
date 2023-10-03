@@ -40,6 +40,23 @@ class TestMicadoParser(unittest.TestCase):
             ]["spec"]["hostPath"]["path"],
         )
 
+    def test_get_input_string(self):
+        string_match = "ECHOTEST123"
+        tpl = set_template(
+            "tests/templates/inputs_test.yaml", 
+            parsed_params={"echo_msg": string_match}
+        )
+        env_vars = tpl.nodetemplates[0].get_property_value("env")
+        self.assertEqual(
+            string_match, env_vars[0]["value"]
+        )
+
+    def test_get_input_custom(self):
+        tpl = set_template("tests/templates/inputs_test.yaml")
+        input_type = tpl.inputs[0].type
+        self.assertEqual(
+            input_type, "string"
+        )
 
 if __name__ == "__main__":
     unittest.main()
