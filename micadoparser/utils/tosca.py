@@ -10,6 +10,17 @@ import copy
 
 from micadoparser.utils.utils import resolve_get_functions
 
+CUSTOM_TYPE_MAP = {
+    "secret": "string"
+}
+
+TOSCA_INPUT_TYPES = [
+    "string",
+    "integer",
+    "boolean",
+    "float",
+    "timestamp"
+]
 
 def is_v1_3(tpl):
     """
@@ -53,6 +64,16 @@ def resolve_occurrences(tpl_dict, parsed_params):
         old_node = nodes.pop(name)
         new_nodes = _create_occurrences(count, name, old_node, inputs)
         nodes.update(new_nodes)
+
+def fix_custom_input_types(tpl_dict):
+    input_dict = tpl_dict.get("topology_template", {}).get("inputs", {})
+    for name, field in input_dict.items():
+        input_type = field.get("type")
+        if input_type in TOSCA_INPUT_TYPES:
+            continue
+        if input_type not in CUSTOM_TYPE_MAP:
+            raise TypeError(f"Unsupported input type {input_type} for {name}!")
+        field["type"] = CUSTOM_TYPE_MAP[input_type]
 
 
 def _validate_values(count, occurrences):

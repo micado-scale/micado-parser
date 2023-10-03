@@ -94,6 +94,8 @@ def handle_yaml(path, parsed_params):
 
     tpl = YAMLLoader(path)
 
+    tosca.fix_custom_input_types(tpl.dict)
+
     if tosca.is_v1_3(tpl.dict):
         tosca.fix_version(tpl.dict)
         tosca.resolve_occurrences(tpl.dict, parsed_params)
