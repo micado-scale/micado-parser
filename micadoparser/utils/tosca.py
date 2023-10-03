@@ -15,6 +15,8 @@ CUSTOM_TYPE_MAP = {
 }
 
 TOSCA_INPUT_TYPES = [
+    "map",
+    "list",
     "string",
     "integer",
     "boolean",
