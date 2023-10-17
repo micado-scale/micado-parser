@@ -5,6 +5,8 @@ Various utilities for the MiCADO Parser which did not fit elsewhere
 """
 
 
+import re
+
 def resolve_get_functions(
     dict_to_search, key_to_find, test_result_fn, resolve_result_fn, *args
 ):
@@ -20,9 +22,29 @@ def resolve_get_functions(
     Returns:
         None: Modifies the dictionary in place
     """
+
+    def replace_strings(value, test_result_fn, resolve_result_fn, *args):
+        pattern = re.compile(r'{{\s*(?:(?:"{0}")|(?:\'{0}\')|{0})\s*:\s*(?:(?:"([^"]+)")|(?:\'([^\']+)\')|([^}}\s]+))\s*}}'.format(re.escape(key_to_find)))
+
+        modified_value = value  
+        matches = pattern.finditer(value)
+        for match in matches:
+            item = match.group(1) or match.group(2) or match.group(3)
+            if test_result_fn(item):
+                replacement = resolve_result_fn(item, *args)
+                if not replacement:
+                    continue
+                modified_value = modified_value.replace(match.group(0), replacement)
+        return modified_value
+
+
+
     for key, value in dict_to_search.items():
         if key == key_to_find:
             return value
+
+        elif isinstance(value, str):
+            dict_to_search[key] = replace_strings(value, test_result_fn, resolve_result_fn, *args)
 
         elif isinstance(value, dict):
             result = resolve_get_functions(
@@ -33,13 +55,14 @@ def resolve_get_functions(
 
         elif isinstance(value, list):
             for index, item in enumerate(value):
-                if not isinstance(item, dict):
-                    continue
-                result = resolve_get_functions(
-                    item, key_to_find, test_result_fn, resolve_result_fn, *args
-                )
-                if test_result_fn(result):
-                    dict_to_search[key][index] = resolve_result_fn(result, *args)
+                if isinstance(item, str):
+                    value[index] = replace_strings(item, test_result_fn, resolve_result_fn, *args)
+                elif isinstance(item, dict):
+                    result = resolve_get_functions(
+                        item, key_to_find, test_result_fn, resolve_result_fn, *args
+                    )
+                    if test_result_fn(result):
+                        value[index] = resolve_result_fn(result, *args)
 
 
 def is_custom(node, tpl):

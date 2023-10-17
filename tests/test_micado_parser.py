@@ -50,6 +50,29 @@ class TestMicadoParser(unittest.TestCase):
         self.assertEqual(
             string_match, env_vars[0]["value"]
         )
+        
+        command = tpl.nodetemplates[0].get_property_value("command")
+        self.assertEqual(
+            string_match, command[0]
+        )
+
+
+    def test_get_input_within_string(self):
+        string_match = "ECHOTEST123"
+        tpl = set_template(
+            "tests/templates/inputs_test.yaml", 
+            parsed_params={"echo_msg": string_match}
+        )
+        command = tpl.nodetemplates[0].get_property_value("command")
+        self.assertEqual(
+            f"echo {string_match}", command[2]
+        )
+        image = tpl.nodetemplates[0].get_property_value("image")
+        self.assertEqual(
+            f"thisismyimage:ECHOTEST123", image
+        )
+        
+
 
     def test_get_input_custom(self):
         tpl = set_template("tests/templates/inputs_test.yaml")
