@@ -32,8 +32,8 @@ def resolve_get_functions(
             item = match.group(1) or match.group(2) or match.group(3)
             if test_result_fn(item):
                 replacement = resolve_result_fn(item, *args)
-                if not replacement:
-                    continue
+                if not replacement:                    
+                    replacement = ""
                 modified_value = modified_value.replace(match.group(0), replacement)
         return modified_value
 
