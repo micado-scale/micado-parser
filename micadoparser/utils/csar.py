@@ -33,6 +33,11 @@ def handle_csar(path, parsed_params):
     template = parser.get_template(path, parsed_params)
 
     template.nodetemplates = get_concrete_nodes(template)
+    template.inputs += [
+        inpt 
+        for tpl in template.nested_tosca_templates_with_topology 
+        for inpt in tpl.inputs
+    ]
 
     return template
 
